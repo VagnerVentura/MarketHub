@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>order-service</artifactId>
-    <n>MarketHub :: Order Service</n>
+    <name>MarketHub :: Order Service</name>
 
     <dependencies>
         <dependency>

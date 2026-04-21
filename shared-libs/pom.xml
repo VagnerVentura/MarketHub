@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>shared-libs</artifactId>
-    <n>MarketHub :: Shared Libraries</n>
+    <name>MarketHub :: Shared Libraries</name>
 
     <dependencies>
         <dependency>
@@ -21,6 +21,10 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
     </dependencies>
 </project>
