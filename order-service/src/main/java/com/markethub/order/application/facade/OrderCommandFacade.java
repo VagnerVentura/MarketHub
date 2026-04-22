@@ -1,9 +1,11 @@
 package com.markethub.order.application.facade;
 
-import com.markethub.order.application.command.CancelOrderCommand;
-import com.markethub.order.application.command.CreateOrderCommand;
+import com.markethub.order.application.command.commands.CancelOrderCommand;
+import com.markethub.order.application.command.commands.CreateOrderCommand;
 import com.markethub.order.application.command.handler.CancelOrderCommandHandler;
 import com.markethub.order.application.command.handler.CreateOrderCommandHandler;
+import com.markethub.order.application.command.commands.ApplyPaymentResultCommand;
+import com.markethub.order.application.command.handler.ApplyPaymentResultCommandHandler;
 import com.markethub.order.application.dto.CreateOrderRequest;
 import com.markethub.order.application.dto.OrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,10 @@ public class OrderCommandFacade {
 
     private final CreateOrderCommandHandler createOrderCommandHandler;
     private final CancelOrderCommandHandler cancelOrderCommandHandler;
+    private final ApplyPaymentResultCommandHandler applyPaymentResultCommandHandler;
 
     public OrderResponse createOrder(CreateOrderRequest createOrderRequest) {
-        var command = new CreateOrderCommand(createOrderRequest.customerId(),createOrderRequest);
+        var command = new CreateOrderCommand(createOrderRequest.customerId(), createOrderRequest);
         return createOrderCommandHandler.handle(command);
     }
 
@@ -28,9 +31,8 @@ public class OrderCommandFacade {
         return cancelOrderCommandHandler.handle(command);
     }
 
-    // Called internally by Kafka consumer (Saga)
-    public void confirmOrder(UUID orderId) {
-        // loaded by infra and confirmed — event published
+    public void applyPaymentResult(UUID orderId, String paymentStatus, String reason) {
+        var command = new ApplyPaymentResultCommand(orderId, paymentStatus, reason);
+        applyPaymentResultCommandHandler.handle(command);
     }
-
 }
