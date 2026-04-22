@@ -1,6 +1,4 @@
-package com.markethub.order.application.command;
-
-import java.util.UUID;
+package com.markethub.order.application.command.commands;
 
 public interface CommandHandler <C,R>{
     R handle(C command);

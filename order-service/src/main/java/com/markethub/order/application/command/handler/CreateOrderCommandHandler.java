@@ -1,15 +1,15 @@
 package com.markethub.order.application.command.handler;
 
-import com.markethub.order.application.command.CommandHandler;
-import com.markethub.order.application.command.CreateOrderCommand;
+import com.markethub.order.application.command.commands.CommandHandler;
+import com.markethub.order.application.command.commands.CreateOrderCommand;
 import com.markethub.order.application.dto.OrderResponse;
+import com.markethub.order.application.port.out.ProductCatalogGateway;
 import com.markethub.order.domain.exception.InsufficientStockException;
 import com.markethub.order.domain.model.Money;
 import com.markethub.order.domain.model.Order;
 import com.markethub.order.domain.model.OrderItem;
 import com.markethub.order.domain.repository.OrderRepository;
 import com.markethub.order.domain.service.DomainEventPublisher;
-import com.markethub.order.infrastructure.client.ProductServiceClient;
 import com.markethub.order.infrastructure.client.dto.ProductResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.UUID;
 public class CreateOrderCommandHandler implements CommandHandler<CreateOrderCommand, OrderResponse> {
 
     private final OrderRepository orderRepository;
-    private final ProductServiceClient productServiceClient;
+    private final ProductCatalogGateway productCatalogGateway;
     private final DomainEventPublisher eventPublisher;
 
     @CircuitBreaker(name = "productService", fallbackMethod = "fallback")
@@ -52,7 +52,7 @@ public class CreateOrderCommandHandler implements CommandHandler<CreateOrderComm
     }
 
     private OrderItem buildOrderItem(UUID productId, int quantity){
-        ProductResponse product = productServiceClient.getProduct(productId);
+        ProductResponse product = productCatalogGateway.getProduct(productId);
 
         if(product.stock() < quantity){
             throw new InsufficientStockException(productId);
